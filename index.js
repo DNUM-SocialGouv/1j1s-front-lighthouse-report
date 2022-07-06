@@ -11,7 +11,7 @@ require('dotenv').config();
 
 console.log('Starting server...');
 createServer({
-  port: process.env.DATABASE_PORT,
+  port: process.env.PORT,
   storage: {
     storageMethod: 'sql',
     sqlDialect: 'postgres',
