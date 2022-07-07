@@ -6,12 +6,10 @@
 'use strict';
 
 const {createServer} = require('@lhci/server');
-require('dotenv').config();
-
 
 console.log('Starting server...');
 createServer({
-  port: process.env.DATABASE_PORT,
+  port: process.env.PORT,
   storage: {
     storageMethod: 'sql',
     sqlDialect: 'postgres',
@@ -20,3 +18,5 @@ createServer({
     sqlConnectionUrl: process.env.DATABASE_URL,
   },
 }).then(({port}) => console.log('Listening on port', port));
+
+
