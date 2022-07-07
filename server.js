@@ -6,8 +6,6 @@
 'use strict';
 
 const {createServer} = require('@lhci/server');
-require('dotenv').config();
-
 
 console.log('Starting server...');
 createServer({
