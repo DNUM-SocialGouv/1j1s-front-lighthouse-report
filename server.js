@@ -17,6 +17,10 @@ createServer({
     sqlDialectOptions: {ssl: {rejectUnauthorized: false}},
     sqlConnectionUrl: process.env.DATABASE_URL,
   },
+  deleteOldBuildsCron: {
+    schedule: '0 0 * * *', // Daily at midnight
+    maxAgeInDays: 10,
+  }
 }).then(({port}) => console.log('Listening on port', port));
 
 
