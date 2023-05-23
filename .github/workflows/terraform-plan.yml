@@ -1,0 +1,15 @@
+name: Simulation de déploiement Terraform
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  terraform_plan:
+    # uses: DNUM-SocialGouv/1j1s-front-lighthouse-report/.github/workflows/terraform.yml@main
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    with:
+      plan: true
+      environnement_name: scalingo
+      environnement_url: 'https://1j1s-front-lighthouse-report.osc-fr1.scalingo.io/app/projects/1j1s-front-lighthouse-report/dashboard'

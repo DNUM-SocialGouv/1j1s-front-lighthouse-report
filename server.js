@@ -22,5 +22,3 @@ createServer({
     maxAgeInDays: 10,
   }
 }).then(({port}) => console.log('Listening on port', port));
-
-
