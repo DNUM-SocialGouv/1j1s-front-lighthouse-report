@@ -5,7 +5,7 @@
 <h3 align="center">1J1S Front Lighthouse report</h3>
 
   <p align="center">
-    LHCI Server 
+    LHCI Server
   </p>
 </div>
 
