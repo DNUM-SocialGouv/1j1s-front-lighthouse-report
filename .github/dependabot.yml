@@ -10,6 +10,11 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/terraform" # Location of package manifests
     schedule:

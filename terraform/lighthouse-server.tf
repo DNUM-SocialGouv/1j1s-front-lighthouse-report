@@ -1,7 +1,7 @@
 module "front_app" {
   source = "github.com/scalingo-community/terraform-scalingo-app"
 
-  stack = "scalingo-20"
+  stack = "scalingo-22"
 
   name = "1j1s-front-lighthouse-report"
 
