@@ -1,7 +1,6 @@
-module "front_app" {
-  # source = "github.com/scalingo-community/terraform-scalingo-app"
+module "lighthouse_app" {
   source = "scalingo-community/app/scalingo"
-  version = "0.1.0"
+  version = "0.3.0"
 
   stack = "scalingo-22"
 
@@ -37,4 +36,11 @@ module "front_app" {
       url  = sensitive(var.logstash_uri)
     }
   ] : null
+
+  router_logs = true
+}
+
+moved {
+  from = module.front_app
+  to   = module.lighthouse_app
 }
