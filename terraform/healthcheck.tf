@@ -9,7 +9,7 @@ locals {
 
   domaine_a_tester = coalesce(
     var.front_nom_de_domaine,
-    module.front_app.domain
+    module.lighthouse_app.domain
   )
 
   nom_environnement = "outils"
@@ -27,7 +27,7 @@ resource "statuscake_uptime_check" "http_check" {
 
   monitored_resource {
     address = "https://${local.domaine_a_tester}/"
-    host    = "Scalingo (region: ${module.front_app.region})"
+    host    = "Scalingo (region: ${module.lighthouse_app.region})"
   }
 
   contact_groups = [

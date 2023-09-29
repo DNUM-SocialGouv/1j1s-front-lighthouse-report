@@ -33,12 +33,11 @@ terraform {
   required_providers {
     scalingo = {
       source  = "Scalingo/scalingo"
-      version = "~> 2.0"
     }
 
     statuscake = {
       source  = "StatusCakeDev/statuscake"
-      version = "~> 2.1"
+      version = "~> 2.2"
     }
   }
 }
