@@ -1,0 +1,49 @@
+name: Mise en pause Scalingo
+
+on:
+  schedule:
+    # Du lundi au vendredi à 6h UTC => démarrage des containers
+    - cron: '0 8 * * 1-5'
+    # Du lundi au vendredi à 20h UTC => mise en pause des containers
+    - cron: '0 20 * * 1-5'
+
+env:
+  APP_NAME: 1j1s-front-lighthouse-report
+
+jobs:
+  pause-recette:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurer la CLI Scalingo
+        uses: scalingo-community/setup-scalingo@v0.1.1
+        with:
+          api_token: ${{ secrets.SCALINGO_API_TOKEN }}
+          region: ${{ vars.SCALINGO_REGION }}
+          app_name: ${{ env.APP_NAME }}
+
+      - name: Mettre en pause les containers de l'application
+        if: github.event.schedule != '0 20 * * 1-5'
+        run: |
+          scalingo scale web:0
+
+      - name: Mettre en pause les review apps associées à l'application
+        if: github.event.schedule != '0 20 * * 1-5'
+        run: |
+          for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
+            echo "Mise en pause de la review app ${review_app"
+            scalingo --app "${review_app}" scale web:0
+          done
+
+      - name: Démarrer les containers de l'application
+        if: github.event.schedule != '0 8 * * 1-5'
+        run: |
+          scalingo scale web:1 --synchronous
+
+      - name: Démarrer les review apps associées à l'application
+        if: github.event.schedule != '0 8 * * 1-5'
+        run: |
+          for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
+            echo "Démarrage de la review app ${review_app}"
+            scalingo --app "${review_app}" scale web:1 --synchronous
+          done
