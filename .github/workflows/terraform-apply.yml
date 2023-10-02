@@ -1,4 +1,4 @@
-name: Déploiement Terraform
+name: Mise en production Terraform
 
 on:
   push:
@@ -8,8 +8,7 @@ jobs:
 
   # Déploiement sur Scalingo à chaque push sur la branche "main"
   recette:
-    # uses: DNUM-SocialGouv/1j1s-front-lighthouse-report/.github/workflows/terraform.yml@main
-    uses: ./.github/workflows/terraform.yml
+    uses: DNUM-SocialGouv/1j1s-front/.github/workflows/terraform-template.yml@main
     secrets: inherit
     with:
       apply: true
