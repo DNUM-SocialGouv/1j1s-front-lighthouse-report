@@ -1,5 +1,5 @@
 module "lighthouse_app" {
-  source = "scalingo-community/app/scalingo"
+  source  = "scalingo-community/app/scalingo"
   version = "0.3.0"
 
   stack = "scalingo-22"

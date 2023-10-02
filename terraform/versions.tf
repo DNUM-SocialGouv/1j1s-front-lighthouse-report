@@ -32,7 +32,7 @@ terraform {
 
   required_providers {
     scalingo = {
-      source  = "Scalingo/scalingo"
+      source = "Scalingo/scalingo"
     }
 
     statuscake = {
