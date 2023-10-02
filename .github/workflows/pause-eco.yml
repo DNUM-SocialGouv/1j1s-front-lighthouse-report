@@ -32,7 +32,7 @@ jobs:
         if: github.event.schedule != '0 20 * * 1-5'
         run: |
           for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
-            echo "Mise en pause de la review app ${review_app"
+            echo "Mise en pause de la review app ${review_app}"
             scalingo --app "${review_app}" scale web:0
           done
 
