@@ -3,12 +3,13 @@ name: Mise en pause Scalingo
 on:
   schedule:
     # Du lundi au vendredi à 6h UTC => démarrage des containers
-    - cron: '0 8 * * 1-5'
+    - cron: '0 6 * * 1-5'
     # Du lundi au vendredi à 20h UTC => mise en pause des containers
     - cron: '0 20 * * 1-5'
 
 env:
   APP_NAME: 1j1s-front-lighthouse-report
+  CONTAINER_NUMBER: "1"
 
 jobs:
   pause-recette:
@@ -38,12 +39,12 @@ jobs:
       - name: Démarrer les containers de l'application
         if: github.event.schedule != '0 8 * * 1-5'
         run: |
-          scalingo scale web:1 --synchronous
+          scalingo scale --synchronous web:${CONTAINER_NUMBER}
 
       - name: Démarrer les review apps associées à l'application
         if: github.event.schedule != '0 8 * * 1-5'
         run: |
           for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
             echo "Démarrage de la review app ${review_app}"
-            scalingo --app "${review_app}" scale web:1 --synchronous
+            scalingo --app "${review_app}" scale --synchronous web:${CONTAINER_NUMBER}
           done
