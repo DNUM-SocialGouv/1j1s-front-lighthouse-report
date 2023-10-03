@@ -23,28 +23,32 @@ jobs:
           region: ${{ vars.SCALINGO_REGION }}
           app_name: ${{ env.APP_NAME }}
 
-      - name: Mettre en pause les containers de l'application
-        if: github.event.schedule != '0 20 * * 1-5'
+      - name: Définir le nombre cible de containers à 0
+        if: github.event.schedule == '0 20 * * 1-5'
         run: |
-          scalingo scale web:0
+          echo "::set-env name=CONTAINER_NUMBER::0"
 
-      - name: Mettre en pause les review apps associées à l'application
-        if: github.event.schedule != '0 20 * * 1-5'
+      - name: Définir le nombre cible de containers à 1
+        if: github.event.schedule == '0 6 * * 1-5'
         run: |
-          for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
+          echo "::set-env name=CONTAINER_NUMBER::1"
+
+      - name: Mettre en pause ou redémarrer les containers de l'application
+        run: |
+          scalingo scale web:${CONTAINER_NUMBER}
+
+      - name: Mettre en pause ou redémarrer les review apps associées à l'application
+        run: |
+          for review_app in $(scalingo review-apps | grep -v "No review app" | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
+
             echo "Mise en pause de la review app ${review_app}"
-            scalingo --app "${review_app}" scale web:0
-          done
+            if !SCALE_RESULT=$(scalingo --app "${review_app}" scale --synchronous web:${CONTAINER_NUMBER} 2>&1); then
 
-      - name: Démarrer les containers de l'application
-        if: github.event.schedule != '0 8 * * 1-5'
-        run: |
-          scalingo scale --synchronous web:${CONTAINER_NUMBER}
-
-      - name: Démarrer les review apps associées à l'application
-        if: github.event.schedule != '0 8 * * 1-5'
-        run: |
-          for review_app in $(scalingo review-apps | grep "$APP_NAME" | awk -F' | ' '{print $2}'); do
-            echo "Démarrage de la review app ${review_app}"
-            scalingo --app "${review_app}" scale --synchronous web:${CONTAINER_NUMBER}
+              if [[ $SCALE_RESULT == *"no change in containers formation"* ]]; then
+                echo "La review app ${review_app} est déjà mise en pause"
+              else
+                echo $SCALE_RESULT
+                exit 1
+              fi
+            fi
           done
