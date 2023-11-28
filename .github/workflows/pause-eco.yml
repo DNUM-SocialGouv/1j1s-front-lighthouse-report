@@ -6,12 +6,18 @@ on:
     - cron: '0 6 * * 1-5'
     # Du lundi au vendredi à 20h UTC => mise en pause des containers
     - cron: '0 20 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      number_of_container:
+        description: 'Nombre de containers souhaités'
+        required: false
+        type: number
 
 env:
   APP_NAME: 1j1s-front-lighthouse-report
   STATUSCAKE_API_TOKEN: ${{ secrets.STATUSCAKE_API_TOKEN }}
   STATUSCAKE_UPTIME_CHECK_ID: 6898859
-  CONTAINER_NUMBER: "1"
+  CONTAINER_NUMBER: ${{ github.event.inputs.number_of_container || '1' }}
 
 jobs:
   pause-recette:
@@ -26,26 +32,17 @@ jobs:
           app_name: ${{ env.APP_NAME }}
 
       - name: Définir le nombre cible de containers à 0
+        # when schedule on evening
         if: github.event.schedule == '0 20 * * 1-5'
         run: echo "CONTAINER_NUMBER=0" >> $GITHUB_ENV
 
-      - name: Définir le nombre cible de containers à 1
-        if: github.event.schedule == '0 6 * * 1-5'
-        run: echo "CONTAINER_NUMBER=1" >> $GITHUB_ENV
-
-      - name: Définir la mise en veille de la sonde StatusCake à true
+      - name: Mettre en pause la sonde StatusCake
+        # when schedule on evening
         if: github.event.schedule == '0 20 * * 1-5'
-        run: echo "UPTIME_CHECK_PAUSED=true" >> $GITHUB_ENV
-
-      - name: Définir la mise en veille de la sonde StatusCake à false
-        if: github.event.schedule == '0 6 * * 1-5'
-        run: echo "UPTIME_CHECK_PAUSED=false" >> $GITHUB_ENV
-
-      - name: Mettre en pause ou relancer la sonde StatusCake
         run: |
           curl -X PUT https://api.statuscake.com/v1/uptime/${STATUSCAKE_UPTIME_CHECK_ID} \
             -H "Authorization: Bearer ${STATUSCAKE_API_TOKEN}" \
-            -d "paused=${UPTIME_CHECK_PAUSED}"
+            -d "paused=true"
 
       - name: Mettre en pause ou redémarrer les containers de l'application
         run: |
@@ -66,3 +63,11 @@ jobs:
               fi
             fi
           done
+
+      - name: Relancer la sonde StatusCake
+        # when schedule on morning or manually trigerred
+        if: github.event.schedule == '0 6 * * 1-5' || github.event_name == 'workflow_dispatch'
+        run: |
+          curl -X PUT https://api.statuscake.com/v1/uptime/${STATUSCAKE_UPTIME_CHECK_ID} \
+            -H "Authorization: Bearer ${STATUSCAKE_API_TOKEN}" \
+            -d "paused=false"
