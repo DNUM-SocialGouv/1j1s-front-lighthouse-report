@@ -35,13 +35,11 @@ jobs:
 
       - name: Définir la mise en veille de la sonde StatusCake à true
         if: github.event.schedule == '0 20 * * 1-5'
-        run: |
-          echo "::set-env name=UPTIME_CHECK_PAUSED::true"
+        run: echo "UPTIME_CHECK_PAUSED=true" >> $GITHUB_ENV
 
       - name: Définir la mise en veille de la sonde StatusCake à false
         if: github.event.schedule == '0 6 * * 1-5'
-        run: |
-          echo "::set-env name=UPTIME_CHECK_PAUSED::false"
+        run: echo "UPTIME_CHECK_PAUSED=false" >> $GITHUB_ENV
 
       - name: Mettre en pause ou relancer la sonde StatusCake
         run: |
