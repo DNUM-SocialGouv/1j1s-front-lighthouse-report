@@ -9,6 +9,8 @@ on:
 
 env:
   APP_NAME: 1j1s-front-lighthouse-report
+  STATUSCAKE_API_TOKEN: ${{ secrets.STATUSCAKE_API_TOKEN }}
+  STATUSCAKE_UPTIME_CHECK_ID: 6898859
   CONTAINER_NUMBER: "1"
 
 jobs:
@@ -30,6 +32,22 @@ jobs:
       - name: Définir le nombre cible de containers à 1
         if: github.event.schedule == '0 6 * * 1-5'
         run: echo "CONTAINER_NUMBER=1" >> $GITHUB_ENV
+
+      - name: Définir la mise en veille de la sonde StatusCake à true
+        if: github.event.schedule == '0 20 * * 1-5'
+        run: |
+          echo "::set-env name=UPTIME_CHECK_PAUSED::true"
+
+      - name: Définir la mise en veille de la sonde StatusCake à false
+        if: github.event.schedule == '0 6 * * 1-5'
+        run: |
+          echo "::set-env name=UPTIME_CHECK_PAUSED::false"
+
+      - name: Mettre en pause ou relancer la sonde StatusCake
+        run: |
+          curl -X PUT https://api.statuscake.com/v1/uptime/${STATUSCAKE_UPTIME_CHECK_ID} \
+            -H "Authorization: Bearer ${STATUSCAKE_API_TOKEN}" \
+            -d "paused=${UPTIME_CHECK_PAUSED}"
 
       - name: Mettre en pause ou redémarrer les containers de l'application
         run: |
