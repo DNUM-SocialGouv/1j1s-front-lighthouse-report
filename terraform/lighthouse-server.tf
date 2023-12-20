@@ -27,6 +27,7 @@ module "lighthouse_app" {
     {
       provider = "postgresql"
       plan     = "postgresql-starter-512"
+      database_features = ["force-ssl"]
     }
   ]
 
@@ -38,9 +39,4 @@ module "lighthouse_app" {
   ] : null
 
   router_logs = true
-}
-
-moved {
-  from = module.front_app
-  to   = module.lighthouse_app
 }
