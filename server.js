@@ -14,11 +14,13 @@ createServer({
     storageMethod: 'sql',
     sqlDialect: 'postgres',
     sqlConnectionSsl: true,
-    sqlDialectOptions: {ssl: {rejectUnauthorized: false}},
     sqlConnectionUrl: process.env.DATABASE_URL,
+    sqlDialectOptions: {
+      ssl: true
+    },
   },
   deleteOldBuildsCron: {
     schedule: '0 0 * * *', // Daily at midnight
-    maxAgeInDays: 10,
+    maxAgeInDays: 60,
   }
 }).then(({port}) => console.log('Listening on port', port));
