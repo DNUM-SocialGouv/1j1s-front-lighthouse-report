@@ -45,8 +45,14 @@ jobs:
             -d "paused=true"
 
       - name: Mettre en pause ou redémarrer les containers de l'application
-        run: |
-          scalingo scale web:${CONTAINER_NUMBER}
+        uses: nick-fields/retry@v2
+        with:
+          max_attempts: 10
+          retry_on: error
+          timeout_seconds: 30
+          retry_wait_seconds: 30
+          command: |
+            scalingo scale web:${CONTAINER_NUMBER}
 
       - name: Mettre en pause ou redémarrer les review apps associées à l'application
         run: |
