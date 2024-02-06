@@ -45,7 +45,7 @@ jobs:
             -d "paused=true"
 
       - name: Mettre en pause ou redémarrer les containers de l'application
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           max_attempts: 10
           retry_on: error
