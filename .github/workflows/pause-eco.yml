@@ -5,7 +5,7 @@ on:
     # Du lundi au vendredi à 6h UTC => démarrage des containers
     - cron: '0 6 * * 1-5'
     # Du lundi au vendredi à 20h UTC => mise en pause des containers
-    - cron: '0 20 * * 1-5'
+    - cron: '0 19 * * 1-5'
   workflow_dispatch:
     inputs:
       number_of_container:
