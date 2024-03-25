@@ -33,12 +33,12 @@ jobs:
 
       - name: Définir le nombre cible de containers à 0
         # when schedule on evening
-        if: github.event.schedule == '0 20 * * 1-5'
+        if: github.event.schedule == '0 19 * * 1-5'
         run: echo "CONTAINER_NUMBER=0" >> $GITHUB_ENV
 
       - name: Mettre en pause la sonde StatusCake
         # when schedule on evening
-        if: github.event.schedule == '0 20 * * 1-5'
+        if: github.event.schedule == '0 19 * * 1-5'
         run: |
           curl -X PUT https://api.statuscake.com/v1/uptime/${STATUSCAKE_UPTIME_CHECK_ID} \
             -H "Authorization: Bearer ${STATUSCAKE_API_TOKEN}" \
