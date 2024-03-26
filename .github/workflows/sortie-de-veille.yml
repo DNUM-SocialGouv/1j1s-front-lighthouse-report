@@ -1,0 +1,25 @@
+name: Sortie de veille Scalingo
+
+on:
+  schedule:
+    # Du lundi au vendredi à 6h UTC => démarrage des containers
+    - cron: '0 6 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      number_of_container:
+        description: 'Nombre de containers souhaités'
+        required: false
+        default: 1
+        type: number
+
+jobs:
+  pause-recette:
+    uses: ./.github/workflows/eco-scalingo.yml
+    with:
+      scalingo_app_name: 1j1s-front-lighthouse-report
+      scalingo_region: osc-fr1
+      number_of_container: ${{ inputs.number_of_container }}
+      statuscake_uptime_check_id: 6898859
+    secrets:
+      scalingo_api_token: ${{ secrets.SCALINGO_API_TOKEN }}
+      statuscake_api_token: ${{ secrets.STATUSCAKE_API_TOKEN }}
