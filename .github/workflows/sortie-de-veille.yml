@@ -18,7 +18,7 @@ jobs:
     with:
       scalingo_app_name: 1j1s-front-lighthouse-report
       scalingo_region: osc-fr1
-      number_of_container: ${{ fromJson(inputs.number_of_container) }}
+      number_of_container: ${{ fromJson(inputs.number_of_container || 1) }}
       statuscake_uptime_check_id: 6898859
     secrets:
       scalingo_api_token: ${{ secrets.SCALINGO_API_TOKEN }}
