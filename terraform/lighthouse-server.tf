@@ -25,8 +25,8 @@ module "lighthouse_app" {
 
   addons = [
     {
-      provider = "postgresql"
-      plan     = "postgresql-starter-512"
+      provider          = "postgresql"
+      plan              = "postgresql-starter-512"
       database_features = ["force-ssl"]
     }
   ]
